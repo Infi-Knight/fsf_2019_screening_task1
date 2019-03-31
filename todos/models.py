@@ -47,8 +47,9 @@ class Task(models.Model):
     team = models.ForeignKey(
         Team, on_delete=models.SET_NULL, null=True, blank=True)
 
-    member_assigned = models.ManyToManyField(
+    task_accepted_by = models.ManyToManyField(
         UserModel, help_text="Select members to assign this task to")
+    task_accepted_on = models.DateField(null=True, blank=True)
 
     # Timings
     planned_on = models.DateField(auto_now_add=True)
