@@ -7,6 +7,24 @@ from django.urls import reverse
 UserModel = get_user_model()
 
 
+class Team(models.Model):
+    name = models.CharField(max_length=50)
+    desc = models.TextField(default='', max_length=1024, blank=True)
+    leader = models.ForeignKey(
+        UserModel, on_delete=models.CASCADE, related_name='leads_teams')
+    members = models.ManyToManyField(UserModel)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("task_manager:team_description", kwargs={"team_id": self.id})
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name_plural = "Teams"
+
+
 class Task(models.Model):
     PLANNED = 'Planned'
     INPROGRESS = 'Inprogress'
@@ -25,6 +43,9 @@ class Task(models.Model):
     # related_name specifies a reverse relationship
     creator = models.ForeignKey(
         UserModel, on_delete=models.CASCADE, related_name='created_tasks')
+
+    team = models.ForeignKey(
+        Team, on_delete=models.SET_NULL, null=True, blank=True)
 
     # Timings
     planned_on = models.DateField(auto_now_add=True)
@@ -47,21 +68,3 @@ class Task(models.Model):
     class Meta:
         ordering = ["planned_on"]
         verbose_name_plural = "Tasks"
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=50)
-    desc = models.TextField(default='', blank=True)
-    leader = models.ForeignKey(
-        UserModel, on_delete=models.CASCADE, related_name='leads_teams')
-    members = models.ManyToManyField(UserModel)
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse("task_manager:team_description", kwargs={"team_id": self.id})
-
-    class Meta:
-        ordering = ["name"]
-        verbose_name_plural = "Teams"
