@@ -68,3 +68,19 @@ class Task(models.Model):
     class Meta:
         ordering = ["planned_on"]
         verbose_name_plural = "Tasks"
+
+
+class Comment(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    author = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    comment = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def comment_info(self):
+        return "@{author}: {comment_info}...".format(author=self.author, comment_info=self.comment[:50])
+
+    def __str__(self):
+        return self.comment_info()
+
+    class Meta:
+        ordering = ["-timestamp"]
