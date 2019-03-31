@@ -1,5 +1,7 @@
 # fsf_2019_screening_task1
 
+Taskmanager: A multi-user, multi-team task management and assignment system.
+
 ## Requirements
 
 - Django 2.1.7
